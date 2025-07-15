@@ -5,11 +5,11 @@
 #define MAX_COMMAND 10
 
 // コマンドバッファと状態変数
-char command[MAX_COMMAND];  // 最大20個まで
+char destinationCommands[MAX_COMMAND] = {};
 
 bool operationMode = false;
 void doOperation();
-int commandLength = 0;  // 実際の長さ
+int commandLength = 0;  // 入力済みコマンドの長さ
 int initialDegree = 0;  // 初期角度
 
 void setup() {
@@ -24,7 +24,7 @@ void loop() {
   if (!operationMode) {
     commandInputLoop();  // 入力受付
   } else {
-    doOperation();           // 実行
+    // doOperation();           // 実行
   }
 }
 
@@ -36,55 +36,71 @@ void commandInputLoop() {
     String input = Serial.readStringUntil('\n');
     input.trim();  // 改行や空白の除去
 
+    // 入力されたコマンドの長さのチェック
+    if (commandLength + input.length() > MAX_COMMAND) {
+      Serial.println("Error: command too long");
+      return;
+    }
+
     for (int i = 0; i < input.length(); i++) {
       char ch = input.charAt(i);
-      commandLength++;
 
-      if (isValidInput(ch)) {
-        // 入力されたコマンドの長さのチェック
-        if (commandLength >= MAX_COMMAND) {
-          Serial.println("Error: command too long");
-          commandLength = 0;
-          return;
-        }
-
-        if (ch == '.') {
-          command[commandLength + 1] = ch;
-          Serial.print("Command: ");
-          for (int j = 0; j < commandLength; j++) {
-            Serial.print(command[j]);
-          }
-          Serial.println();
-          Serial.println("== press button, start ==");
-          operationMode = true;
-          led.on();
-          button.waitForButton();  // 開始待機
-          led.off();
-          return;
-        }
-      } else {
+      // 不正なコマンドならreturn
+      if (!isValidInput(ch)) {
         Serial.print("Error: invalid input '");
         Serial.print(ch);
         Serial.println("'");
-        commandLength = 0;
         Serial.println("=== Command Input Mode ===");
         return;
       }
-    }
 
+      // 最後のコマンドは"."か"*"でないと詰むため、制限
+      if ((commandLength + 1 == MAX_COMMAND) && !(ch == '.' || ch == '*')) {
+        Serial.println("Error: last command must be '.' or '*'");
+        return;
+      }
+
+      // ピリオドならコマンド入力モード終了
+      if (ch == '.') {
+        destinationCommands[commandLength] = ch;
+        commandLength++;
+        Serial.print("Command: ");
+        for (int j = 0; j < commandLength; j++) {
+          Serial.print(destinationCommands[j]);
+        }
+        Serial.println();
+        Serial.println("== press button, start ==");
+        operationMode = true;
+        led.on();
+        button.waitForButton();  // 開始待機
+        led.off();
+        return;
+      } else if (ch == '*') {
+        for (int j = 0; j < commandLength; j++) {
+          destinationCommands[j] = "";
+        }
+        commandLength = 0;
+        Serial.println("command was deleted");
+        return;
+      }
+      // 以外のコマンドなら
+      else {
+        destinationCommands[commandLength] = ch;
+        commandLength++;
+      }
+    }
     // 最後に現在のコマンド列を表示（ピリオドが来てない場合）
     Serial.print("Current Command: ");
     for (int j = 0; j < commandLength; j++) {
-      Serial.print(command[j]);
+      Serial.print(destinationCommands[j]);
     }
     Serial.println();
   }
 }
 
-
 // 有効なコマンドかどうかをチェック
 bool isValidInput(char ch) {
-  return (ch == '0' || ch == '1' || ch == '2' || ch == '3' || ch == '4' || ch == '5' || ch == '6' || ch == '7' || ch == '8' || ch == '9') || (ch == 'a' || ch == 'b' || ch == '*' || ch == '.');
+  return (ch == '0' || ch == '1' || ch == '2' || ch == '3' || ch == '4' || ch == '5' || ch == '6' || ch == '7' || ch == '8' || ch == '9' || ch == 'a' || ch == 'b'|| ch == 'AF' || ch == 'B' || ch == '*' || ch == '.');
 }
 
 // ==========================
