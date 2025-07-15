@@ -11,8 +11,6 @@ extern float four_direction[];
 void doOperation() {
     char cmd = command[0];
 
-    // goStraight();
-
     if (cmd == 'r' || cmd == 'l' || cmd == 'u') { //コマンドがrかlかuのときはdoTurn()を行う。
         doTurn(cmd);     
            
