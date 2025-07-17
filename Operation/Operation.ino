@@ -68,29 +68,28 @@ void goStraight() {
 }
 //右に回ると数字増える　0以上360未満
 void doTurn(char cmd) {
-        float heading; //現在の向きを表す変数
         if (cmd == 'r') {  //コマンドがrのとき
         motors.setSpeeds(TURN_SPEED, -TURN_SPEED);  //右回転
+
         delay(100);
         
-        while(four_dirction_check(imu.averageCompassHeading())) 
+        while(four_direction_check(imu.averageCompassHeading())) ;
                 
     } else if (cmd == 'l') {　　//コマンドがlのとき
         motors.setSpeeds(-TURN_SPEED, TURN_SPEED);  //左回転
 
-        int detectCount = 0;
         delay(100);
         
-        while(four_dirction_check(imu.averageCompassHeading())) 
+        while(four_direction_check(imu.averageCompassHeading())) ;
     } else if (cmd == 'u') {
-        motors.setSpeeds(TURN_SPEED, -TURN_SPEED);  //右回転
+        motors.setSpeeds(TURN_SPEED, -TURN_SPEED);  //右回転でUターン
         delay(100);
         
-        while(four_dirction_check(imu.averageCompassHeading())) 
+        while(four_direction_check(imu.averageCompassHeading())) ;
 
         delay(100);
         
-        while(four_dirction_check(imu.averageCompassHeading())) 
+        while(four_direction_check(imu.averageCompassHeading())) ;
 
     }
 
@@ -98,7 +97,7 @@ void doTurn(char cmd) {
     Serial.print("== Turn end ==");
 }
 
-bool four_dirction_check(float current){
+bool four_direction_check(float current){
     if(abs(four_direction[0] - current) < 2.0 || abs(four_direction[1] - current) < 2.0 ||
     abs(four_direction[2] - current) < 2.0 || abs(four_direction[3] - current) < 2.0 || 
     abs(four_direction[0] - current) > 358 || abs(four_direction[1] - current) > 358 ||
