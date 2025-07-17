@@ -1,8 +1,9 @@
 #include <Wire.h>
 #include <ZumoShieldN.h>
+#include <math.h>
 
 #define MOTOR_SPEED 120
-#define TURN_SPEED 120
+#define TURN_SPEED 100
 #define REFLECTANCE_THRESHOLD 600
 
 extern char command[];
@@ -71,23 +72,23 @@ void doTurn(char cmd) {
         if (cmd == 'r') {  //コマンドがrのとき
         motors.setSpeeds(TURN_SPEED, -TURN_SPEED);  //右回転
 
-        delay(100);
+        delay(300);
         
         while(four_direction_check(imu.averageCompassHeading())) ;
                 
     } else if (cmd == 'l') {　　//コマンドがlのとき
         motors.setSpeeds(-TURN_SPEED, TURN_SPEED);  //左回転
 
-        delay(100);
+        delay(300);
         
         while(four_direction_check(imu.averageCompassHeading())) ;
     } else if (cmd == 'u') {
         motors.setSpeeds(TURN_SPEED, -TURN_SPEED);  //右回転でUターン
-        delay(100);
+        delay(300);
         
         while(four_direction_check(imu.averageCompassHeading())) ;
 
-        delay(100);
+        delay(300);
         
         while(four_direction_check(imu.averageCompassHeading())) ;
 
@@ -98,10 +99,10 @@ void doTurn(char cmd) {
 }
 
 bool four_direction_check(float current){
-    if(abs(four_direction[0] - current) < 2.0 || abs(four_direction[1] - current) < 2.0 ||
-    abs(four_direction[2] - current) < 2.0 || abs(four_direction[3] - current) < 2.0 || 
-    abs(four_direction[0] - current) > 358 || abs(four_direction[1] - current) > 358 ||
-    abs(four_direction[2] - current) > 358 || abs(four_direction[3] - current) > 358 ){
+    if(abs(four_direction[0] - current) < 1.25 || abs(four_direction[1] - current) < 1.25 ||
+    abs(four_direction[2] - current) < 1.25 || abs(four_direction[3] - current) < 1.25 || 
+    abs(four_direction[0] - current) > 358.75 || abs(four_direction[1] - current) > 358.75 ||
+    abs(four_direction[2] - current) > 358.75 || abs(four_direction[3] - current) > 358.75 ){
         return 0;
     }
     return 1; 
