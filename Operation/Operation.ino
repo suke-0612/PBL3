@@ -6,11 +6,11 @@
 #define TURN_SPEED 100
 #define REFLECTANCE_THRESHOLD 600
 
-extern char command[];
+extern char route[];
 extern float four_direction[];
 
 void doOperation() {
-    char cmd = command[0];
+    char cmd = route[0];
 
     if (cmd == 'r' || cmd == 'l' || cmd == 'u') { //コマンドがrかlかuのときはdoTurn()を行う。
         doTurn(cmd);     
@@ -29,8 +29,8 @@ void doOperation() {
     }
 
     int i = 0;
-    while(command[i] != NULL){
-        command[i] = command[i + 1];  //コマンドを詰める
+    while(route[i] != NULL){
+        route[i] = route[i + 1];  //コマンドを詰める
         i++;
     }
 }
@@ -76,7 +76,7 @@ void doTurn(char cmd) {
         
         while(four_direction_check(imu.averageCompassHeading())) ;
                 
-    } else if (cmd == 'l') {　　//コマンドがlのとき
+    } else if (cmd == 'l') {  //コマンドがlのとき
         motors.setSpeeds(-TURN_SPEED, TURN_SPEED);  //左回転
 
         delay(300);
