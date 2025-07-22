@@ -5,6 +5,9 @@
 #define MOTOR_SPEED 120
 #define TURN_SPEED 100
 #define REFLECTANCE_THRESHOLD 600
+#define LINE_TRACE_ADJUST_SPEED 50 //ライントレースの調整速度
+#define ANGLE_TOLERANCE_DEGREE 1.25 //回転時に初期位置の向きから決めた四方向と1.25度以内になったら回転終了
+#define ANGLE_TOLERANCE_MARGIN 358.75 //もしくは358.75度以上になったら回転終了
 
 extern char route[];
 extern float four_direction[];
@@ -12,12 +15,12 @@ extern float four_direction[];
 void doOperation() {
     char cmd = route[0];
 
-    if (cmd == 'r' || cmd == 'l' || cmd == 'u') { //コマンドがrかlかuのときはdoTurn()を行う。
+    if (cmd == 'r' || cmd == 'l' || cmd == 'u') {  //コマンドがrかlかuのときはdoTurn()を行う。
         doTurn(cmd);     
            
     } else if (cmd == 'f') {
         goStraight();
-    } else if (cmd == '.') {　//コマンドが.のときはブザーを鳴らし運行を終了する。
+    } else if (cmd == '.') {  //コマンドが.のときはブザーを鳴らし運行を終了する。
         motors.setSpeeds(0, 0);
         buzzer.playOn();
         while (true) {
@@ -59,9 +62,9 @@ void goStraight() {
 
         //ライントレース
         if (s2) {  //進行方向の右側に車体がずれているとき
-            motors.setSpeeds(- MOTOR_SPEED + 50, MOTOR_SPEED);
+            motors.setSpeeds(- MOTOR_SPEED + LINE_TRACE_ADJUST_SPEED , MOTOR_SPEED);
         } else if (s5) {  //進行方向の左側に車体がずれているとき
-            motors.setSpeeds(MOTOR_SPEED, - MOTOR_SPEED + 50);
+            motors.setSpeeds(MOTOR_SPEED, - MOTOR_SPEED + LINE_TRACE_ADJUST_SPEED);
         } else {  //ずれがないとき
             motors.setSpeeds(MOTOR_SPEED, MOTOR_SPEED);
         }
@@ -99,10 +102,10 @@ void doTurn(char cmd) {
 }
 
 bool four_direction_check(float current){
-    if(abs(four_direction[0] - current) < 1.25 || abs(four_direction[1] - current) < 1.25 ||
-    abs(four_direction[2] - current) < 1.25 || abs(four_direction[3] - current) < 1.25 || 
-    abs(four_direction[0] - current) > 358.75 || abs(four_direction[1] - current) > 358.75 ||
-    abs(four_direction[2] - current) > 358.75 || abs(four_direction[3] - current) > 358.75 ){
+    if(abs(four_direction[0] - current) < ANGLE_TOLERANCE_DEGREE || abs(four_direction[1] - current) < ANGLE_TOLERANCE_DEGREE ||
+    abs(four_direction[2] - current) < ANGLE_TOLERANCE_DEGREE || abs(four_direction[3] - current) < ANGLE_TOLERANCE_DEGREE || 
+    abs(four_direction[0] - current) > ANGLE_TOLERANCE_MARGIN || abs(four_direction[1] - current) > ANGLE_TOLERANCE_MARGIN ||
+    abs(four_direction[2] - current) > ANGLE_TOLERANCE_MARGIN || abs(four_direction[3] - current) > ANGLE_TOLERANCE_MARGIN ){
         return 0;
     }
     return 1; 
