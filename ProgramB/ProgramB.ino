@@ -9,6 +9,7 @@ char destinationCommands[MAX_COMMAND] = {};
 
 void doOperation();
 void doRouteSearch();
+void initializeDirectionArray();
 int commandLength = 0;  // 入力済みコマンドの長さ
 float four_direction[4];
 
@@ -25,20 +26,12 @@ void setup() {
   Serial.println();
   doRouteSearch();  // 経路探索
   Serial.println("== press button to calibrate ==");
-  led.on();
   button.waitForButton();  // 開始待機
-  imu.begin();
-  imu.configureForCompassHeading();
   Serial.println("starting calibration");
-  imu.doCompassCalibration();
-  led.off();
+  doCalibration();
   Serial.println("== press button to start ==");
-  led.on();
   button.waitForButton();  // 開始待機
-  four_direction[0] = imu.averageCompassHeading();
-  four_direction[1] = fmod(imu.averageCompassHeading() + 90, 360);
-  four_direction[2] = fmod(imu.averageCompassHeading() + 180, 360);
-  four_direction[3] = fmod(imu.averageCompassHeading() + 270, 360);
+  initializeDirectionArray();
 }
 
 void loop() {
@@ -84,7 +77,6 @@ bool commandInputLoop() {
         }
         return true;  // ループを終了させる
       } else if (ch == '*') {
-        // ★修正点: commandLengthを0にするだけで良い
         commandLength = 0;
         Serial.println("command was deleted");
         Serial.println("=== Command Input Mode ===");  // モード表示を再度行うと親切

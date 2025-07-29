@@ -3,7 +3,7 @@
 #include <math.h>
 
 #define MOTOR_SPEED 120                //直進速度
-#define TURN_SPEED 100                 //回転速度
+#define TURN_SPEED 120                 //回転速度
 #define REFLECTANCE_THRESHOLD 600      //黒色検出のための定数
 #define LINE_TRACE_ADJUST_SPEED 50     //ライントレースの調整速度
 #define ANGLE_TOLERANCE_DEGREE 1.25    //回転時に初期位置の向きから決めた四方向と1.25度以内になったら回転終了
