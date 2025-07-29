@@ -7,9 +7,6 @@
 // コマンドバッファと状態変数
 char destinationCommands[MAX_COMMAND] = {};
 
-// void doOperation();
-// void doRouteSearch();
-// void initializeDirectionArray();
 int commandLength = 0; // 入力済みコマンドの長さ
 float four_direction[4];
 
