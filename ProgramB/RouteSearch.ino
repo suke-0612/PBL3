@@ -263,6 +263,7 @@ void doRouteSearch()
     }
     curr_id = target;
   }
+  route[route_len++] = '.';
 
   // 結果を出力
   route[route_len] = '\0';
