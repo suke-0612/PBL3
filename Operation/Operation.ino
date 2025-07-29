@@ -9,8 +9,8 @@
 #define ANGLE_TOLERANCE_DEGREE 1.25 //回転時に初期位置の向きから決めた四方向と1.25度以内になったら回転終了
 #define ANGLE_TOLERANCE_MARGIN 358.75 //もしくは358.75度以上になったら回転終了
 
-extern char route[];
-extern float four_direction[];
+extern char route[]; //車への指示が入った配列
+extern float four_direction[]; //初期位置の向きから決めた四方向を記録する配列
 
 void doOperation() {
     char cmd = route[0];
