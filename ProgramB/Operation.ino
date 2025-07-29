@@ -2,15 +2,28 @@
 #include <ZumoShieldN.h>
 #include <math.h>
 
-#define MOTOR_SPEED 120
-#define TURN_SPEED 100
-#define REFLECTANCE_THRESHOLD 600
+#define MOTOR_SPEED 120                //直進速度
+#define TURN_SPEED 100                 //回転速度
+#define REFLECTANCE_THRESHOLD 600      //黒色検出のための定数
 #define LINE_TRACE_ADJUST_SPEED 50     //ライントレースの調整速度
 #define ANGLE_TOLERANCE_DEGREE 1.25    //回転時に初期位置の向きから決めた四方向と1.25度以内になったら回転終了
 #define ANGLE_TOLERANCE_MARGIN 358.75  //もしくは358.75度以上になったら回転終了
 
-extern char route[];
-extern float four_direction[];
+extern char route[];  //生成した経路を保持する配列
+extern float four_direction[];  //運行スタート時に四方向を記録する配列
+
+void doCalibration() {  //キャリブレーションを行う関数
+  imu.begin();
+  imu.configureForCompassHeading();
+  imu.doCompassCalibration();
+}
+
+void initializeDirectionArray() {  //運行スタート時の前後左右の角度を配列に格納する関数
+  four_direction[0] = imu.averageCompassHeading();
+  four_direction[1] = fmod(imu.averageCompassHeading() + 90, 360);
+  four_direction[2] = fmod(imu.averageCompassHeading() + 180, 360);
+  four_direction[3] = fmod(imu.averageCompassHeading() + 270, 360);
+}
 
 void doOperation() {
   char cmd = route[0];
