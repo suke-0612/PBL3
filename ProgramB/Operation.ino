@@ -31,9 +31,9 @@ void doOperation() {
   if (cmd == 'r' || cmd == 'l' || cmd == 'u') {  //コマンドがrかlかuのときはdoTurn()を行う。
     doTurn(cmd);
 
-  } else if (cmd == 'f') {
+  } else if (cmd == 'f') {  //コマンドがfのときはgoStraight()を行う。
     goStraight();
-  } else if (cmd == '.') {  //コマンドが.のときはブザーを鳴らし運行を終了する。
+  } else {  //コマンドがそれ以外（.）のときはブザーを鳴らし運行を終了する。
     motors.setSpeeds(0, 0);
     buzzer.playOn();
     while (true) {
